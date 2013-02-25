@@ -523,7 +523,7 @@ a.iconlink.upload {
 
 #topnav {
 	position: relative;
-	height: 46px;
+	height: 60px;
 	margin-bottom: 10px;
 	padding: 0 0 0 10px;
 	background: #111;
@@ -545,7 +545,6 @@ a.iconlink.upload {
 }
 
 #toplogo {
-	padding-top: 2px;
 	cursor: pointer;
 }
 
@@ -751,6 +750,10 @@ a.iconlink.upload {
 	background-color: #2c2c2c;
 }
 
+a.button-mail {
+	padding-top: 2px;
+}
+
 #taskbar a.button-mail span.button-inner {
 	background-position: 0 2px;
 }
@@ -872,7 +875,7 @@ a.iconlink.upload {
 }
 
 .watermark {
-	background-image: url(images/watermark.jpg);
+	background-image: url(images/mxhero-watermark_black.png);
 	background-position: center;
 	background-repeat: no-repeat;
 }

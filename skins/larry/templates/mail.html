@@ -33,8 +33,8 @@
 <roundcube:object name="mailboxlist" id="mailboxlist" class="treelist listing" folder_filter="mail" unreadwrap="%s" />
 </div>
 <div id="folderlist-footer" class="boxfooter">
-	<roundcube:button name="mailboxmenulink" id="mailboxmenulink" type="link" title="folderactions" class="listbutton groupactions" onclick="UI.show_popup('mailboxmenu');return false" innerClass="inner" content="&#9881;" />
-	<roundcube:if condition="env:quota" />
+<!-- 	<roundcube:button name="mailboxmenulink" id="mailboxmenulink" type="link" title="folderactions" class="listbutton groupactions" onclick="UI.show_popup('mailboxmenu');return false" innerClass="inner" content="&#9881;" />
+ -->	<roundcube:if condition="env:quota" />
 		<roundcube:object name="quotaDisplay" id="quotadisplay" class="countdisplay" display="text" />
 	<roundcube:endif />
 </div>
