@@ -545,6 +545,7 @@ a.iconlink.upload {
 }
 
 #toplogo {
+	height: 80%;
 	cursor: pointer;
 }
 
