@@ -51,7 +51,7 @@ $rcmail_config['log_session'] = false;
 $rcmail_config['sql_debug'] = false;
 
 // Log IMAP conversation to <log_dir>/imap or to syslog
-$rcmail_config['imap_debug'] = true;
+$rcmail_config['imap_debug'] = false;
 
 // Log LDAP conversation to <log_dir>/ldap or to syslog
 $rcmail_config['ldap_debug'] = false;
