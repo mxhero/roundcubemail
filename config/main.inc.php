@@ -217,7 +217,7 @@ $rcmail_config['use_https'] = false;
 
 // Allow browser-autocompletion on login form.
 // 0 - disabled, 1 - username and host only, 2 - username, host, password
-$rcmail_config['login_autocomplete'] = 0;
+$rcmail_config['login_autocomplete'] = 2;
 
 // Forces conversion of logins to lower case.
 // 0 - disabled, 1 - only domain part, 2 - domain and local part.
@@ -275,7 +275,7 @@ $rcmail_config['des_key'] = 'n_OFmB_RwN+jucTihn=Dy4RJ';
 // %d - domain (http hostname without the first part)
 // %z - IMAP domain (IMAP hostname without the first part)
 // For example %n = mail.domain.tld, %d = domain.tld
-$rcmail_config['username_domain'] = '';
+$rcmail_config['username_domain'] = 'quarantine.mxhero.com';
 
 // This domain will be used to form e-mail addresses of new users
 // Specify an array with 'host' => 'domain' values to support multiple hosts

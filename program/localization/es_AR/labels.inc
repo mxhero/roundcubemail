@@ -533,4 +533,6 @@ $labels['japanese'] = 'Japonés';
 $labels['korean'] = 'Coreano';
 $labels['chinese'] = 'Chino';
 
+$labels['release'] = 'Liberar';
+$labels['releasemessage'] = 'Liberar Mensaje';
 ?>

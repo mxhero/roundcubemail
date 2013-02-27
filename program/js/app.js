@@ -1480,7 +1480,7 @@ function rcube_webmail()
       }
     }
     // Multi-message commands
-    this.enable_command('delete', 'moveto', 'copy', 'mark', 'forward', 'forward-attachment', list.selection.length > 0);
+    this.enable_command('release','delete', 'moveto', 'copy', 'mark', 'forward', 'forward-attachment', list.selection.length > 0);
 
     // reset all-pages-selection
     if (selected || (list.selection.length && list.selection.length != list.rowcount))
@@ -4172,7 +4172,7 @@ function rcube_webmail()
       // load dummy content, unselect selected row(s)
       if (!cid)
         this.contact_list.clear_selection();
-      this.enable_command('delete', 'compose', 'export-selected', cid);
+      this.enable_command('release', 'delete', 'compose', 'export-selected', cid);
     }
     else if (framed)
       return false;
