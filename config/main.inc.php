@@ -353,7 +353,7 @@ $rcmail_config['identities_level'] = 2;
 // Mimetypes supported by the browser.
 // attachments of these types will open in a preview window
 // either a comma-separated list or an array: 'text/plain,text/html,text/xml,image/jpeg,image/gif,image/png,application/pdf'
-$rcmail_config['client_mimetypes'] = null;  # null == default
+$rcmail_config['client_mimetypes'] = 'text/plain,text/html,text/xml,image/jpeg,image/gif,image/png,application/pdf';  # null == default
 
 // mime magic database
 $rcmail_config['mime_magic'] = null;
@@ -715,7 +715,7 @@ $rcmail_config['show_images'] = 0;
 
 // compose html formatted messages by default
 // 0 - never, 1 - always, 2 - on reply to HTML message only 
-$rcmail_config['htmleditor'] = 0;
+$rcmail_config['htmleditor'] = 2;
 
 // show pretty dates as standard
 $rcmail_config['prettydate'] = true;

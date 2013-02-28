@@ -11,10 +11,7 @@
 </span>
  --><roundcube:button command="delete" type="link" class="button delete disabled" classAct="button delete" classSel="button delete pressed" label="delete" title="deletemessage" />
 <roundcube:button command="release" type="link" class="button release disabled" classAct="button release" classSel="button release pressed" label="release" title="releasemessage" />
-<span class="dropbutton">
-	<roundcube:button command="forward" type="link" class="button forward disabled" classAct="button forward" classSel="button forward pressed" label="forward" title="forwardmessage" />
-	<span class="dropbuttontip" id="forwardmenulink" onclick="UI.show_popup('forwardmenu');return false"></span>
-</span>
+<roundcube:button command="forward-attachment" type="link" class="button forward disabled" classAct="button forward" classSel="button forward pressed" label="forward" title="forwardmessage" />
 <roundcube:if condition="template:name == 'message'" />
 <roundcube:button command="print" type="link" class="button print disabled" classAct="button print" classSel="button print pressed" label="print" title="printmessage" />
 <roundcube:endif />
@@ -27,14 +24,6 @@
 		<li><roundcube:button command="forward-inline" label="forwardinline" prop="sub" classAct="forwardlink active" class="forwardlink" /></li>
 		<li><roundcube:button command="forward-attachment" label="forwardattachment" prop="sub" classAct="forwardattachmentlink active" class="forwardattachmentlink" /></li>
 		<roundcube:container name="forwardmenu" id="forwardmenu" />
-	</ul>
-</div>
-
-<div id="replyallmenu" class="popupmenu">
-	<ul class="toolbarmenu">
-		<li><roundcube:button command="reply-all" label="replyall" prop="sub" class="replyalllink" classAct="replyalllink active" /></li>
-		<li><roundcube:button command="reply-list" label="replylist" prop="sub" class="replylistlink" classAct="replylistlink active" /></li>
-		<roundcube:container name="replyallmenu" id="replyallmenu" />
 	</ul>
 </div>
 
