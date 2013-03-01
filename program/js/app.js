@@ -766,6 +766,12 @@ function rcube_webmail()
           this.delete_identity();
         break;
 
+      case 'release':
+          // mail task
+          if (this.task == 'mail')
+            this.release_messages(event);
+          break;
+         
       // mail task commands
       case 'move':
       case 'moveto':
@@ -2585,6 +2591,36 @@ function rcube_webmail()
     return true;
   };
 
+  // release selected messages from the current mailbox
+  this.release_messages = function(event)
+  {
+    var uid, i, len, trash = this.env.trash_mailbox,
+      list = this.message_list,
+      selection = list ? list.get_selection() : [];
+
+    // exit if no mailbox specified or if selection is empty
+    if (!this.env.uid && !selection.length)
+      return;
+
+    // also select childs of collapsed rows
+    for (i=0, len=selection.length; i<len; i++) {
+      uid = selection[i];
+      if (list.rows[uid].has_children && !list.rows[uid].expanded)
+        list.select_children(uid);
+    }
+
+    var post_data = this.selection_post_data();
+
+    // exit if selection is empty
+    if (!post_data._uid)
+      return;
+
+    this.show_contentframe(false);
+    this._with_selected_messages('release', post_data);
+
+    return true;
+  };
+  
   // delete the selected messages permanently
   this.permanently_remove_messages = function()
   {

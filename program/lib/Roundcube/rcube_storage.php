@@ -585,6 +585,16 @@ abstract class rcube_storage
      * @return boolean True on success, False on error
      */
     abstract function delete_message($uids, $folder = null);
+    
+    /**
+     * Release message from Quarantine and send it over to engine for flow continuing.
+     *
+     * @param mixed  $uids    Message UIDs as array or comma-separated string, or '*'
+     * @param string $folder  Source folder
+     *
+     * @return boolean True on success, False on error
+     */
+    abstract function release_message($uids, $folder = null);
 
 
     /**

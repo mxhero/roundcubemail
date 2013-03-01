@@ -2473,6 +2473,46 @@ class rcube_imap extends rcube_storage
         return $deleted;
     }
 
+    public function release_message($uids, $folder='')
+    {
+    	if (!strlen($folder)) {
+    		$folder = $this->folder;
+    	}
+    
+    	list($uids, $all_mode) = $this->parse_uids($uids);
+    
+    	// exit if no message uids are specified
+    	if (empty($uids)) {
+    		return false;
+    	}
+    
+    	if (!$this->check_connection()) {
+    		return false;
+    	}
+    	
+    	$deleted = false;
+    
+    	$uids_arr = split(',', $uids);
+    	
+    	foreach ($uids_arr as $uid){		
+	    	$message = $this->get_message($uid,$folder);
+	    	if($message != null){
+	    		//PUT MESSAGE SOME HEADERS.
+	    		//SEND TO MXHERO
+	    		$RCMAIL = rcmail::get_instance();
+	    		$RCMAIL->smtp_init(true);
+	    		$headers = $this->get_message_headers($uid, $folder, true);
+	    		$body = $this->get_body($uid);
+	    		$sended = $RCMAIL->smtp->send_mail($message->from, $message->to, $headers, $body);
+	    		if($sended){
+		    		$deleted = $this->delete_message($uid,$folder);
+	    		}
+	    	}
+    	}
+    
+    	return $deleted;
+    }
+
 
     /**
      * Send IMAP expunge command and clear cache

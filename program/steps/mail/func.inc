@@ -1954,6 +1954,7 @@ $RCMAIL->register_action_map(array(
     'print'   => 'show.inc',
     'moveto'  => 'move_del.inc',
     'delete'  => 'move_del.inc',
+	'release' => 'release.inc',
     'send'    => 'sendmail.inc',
     'expunge' => 'folders.inc',
     'purge'   => 'folders.inc',
