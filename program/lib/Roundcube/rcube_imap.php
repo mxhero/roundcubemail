@@ -2493,17 +2493,18 @@ class rcube_imap extends rcube_storage
     	$deleted = false;
     
     	$uids_arr = split(',', $uids);
+    	$this->options['fetch_headers'] = 'X-mxHero-QuarantinePro-Phase X-mxHero-QuarantinePro-Sender X-mxHero-QuarantinePro-Recipient X-mxHero-QuarantinePro-Priority';
     	
     	foreach ($uids_arr as $uid){		
-	    	$message = $this->get_message($uid,$folder);
+    		$message = $this->get_message($uid,$folder);
 	    	if($message != null){
-	    		//PUT MESSAGE SOME HEADERS.
-	    		//SEND TO MXHERO
+    			$body_raw = $this->get_raw_body($uid);
+    			$headers_raw = $this->get_raw_headers($uid);
 	    		$RCMAIL = rcmail::get_instance();
 	    		$RCMAIL->smtp_init(true);
 	    		$headers = $this->get_message_headers($uid, $folder, true);
-	    		$body = $this->get_body($uid);
-	    		$sended = $RCMAIL->smtp->send_mail($message->from, $message->to, $headers, $body);
+	    		$sended = $RCMAIL->smtp->send_mail($headers->others['x-mxhero-quarantinepro-sender'], $headers->others['x-mxhero-quarantinepro-recipient'], $headers_raw, $body_raw);
+	    		$RCMAIL->smtp->disconnect();
 	    		if($sended){
 		    		$deleted = $this->delete_message($uid,$folder);
 	    		}
