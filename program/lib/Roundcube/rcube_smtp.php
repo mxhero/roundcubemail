@@ -301,6 +301,89 @@ class rcube_smtp
     }
 
     /**
+     * Function for sending mail
+     *
+     * @param string Sender e-Mail address
+     *
+     * @param mixed  Either a comma-seperated list of recipients
+     *               (RFC822 compliant), or an array of recipients,
+     *               each RFC822 valid. This may contain recipients not
+     *               specified in the headers, for Bcc:, resending
+     *               messages, etc.
+     * @param mixed  The full text of the message body, including any Mime parts
+     *               or file handle
+     *
+     * @return bool  Returns true on success, or false on error
+     */
+    public function send_raw_mail($from, $recipients, &$body)
+    {
+        if (!is_object($this->conn)) {
+            return false;
+        }
+
+        // exit if no from address is given
+        if (!isset($from)) {
+            $this->reset();
+            $this->response[] = "No From address has been provided";
+            return false;
+        }
+
+        // set From: address
+        if (PEAR::isError($this->conn->mailFrom($from, $from_params))) {
+            $err = $this->conn->getResponse();
+            $this->error = array('label' => 'smtpfromerror', 'vars' => array(
+                'from' => $from, 'code' => $this->conn->_code, 'msg' => $err[1]));
+            $this->response[] = "Failed to set sender '$from'";
+            $this->reset();
+            return false;
+        }
+
+        // prepare list of recipients
+        $recipients = $this->_parse_rfc822($recipients);
+        if (PEAR::isError($recipients)) {
+            $this->error = array('label' => 'smtprecipientserror');
+            $this->reset();
+            return false;
+        }
+
+        // set mail recipients
+        foreach ($recipients as $recipient) {
+            if (PEAR::isError($this->conn->rcptTo($recipient, $recipient_params))) {
+                $err = $this->conn->getResponse();
+                $this->error = array('label' => 'smtptoerror', 'vars' => array(
+                    'to' => $recipient, 'code' => $this->conn->_code, 'msg' => $err[1]));
+                $this->response[] = "Failed to add recipient '$recipient'";
+                $this->reset();
+                return false;
+            }
+        }
+
+		$data = $body;
+
+		// unset old vars to save data and so we can pass into SMTP_CONN->data by reference.
+		unset($text_headers, $body);
+
+        // Send the message's headers and the body as SMTP data.
+        if (PEAR::isError($result = $this->conn->data($data, $text_headers))) {
+            $err = $this->conn->getResponse();
+            if (!in_array($err[0], array(354, 250, 221))) {
+                $msg = sprintf('[%d] %s', $err[0], $err[1]);
+            }
+            else {
+                $msg = $result->getMessage();
+            }
+
+            $this->error = array('label' => 'smtperror', 'vars' => array('msg' => $msg));
+            $this->response[] = "Failed to send data";
+            $this->reset();
+            return false;
+        }
+
+        $this->response[] = join(': ', $this->conn->getResponse());
+        return true;
+    }
+    
+    /**
      * Reset the global SMTP connection
      */
     public function reset()

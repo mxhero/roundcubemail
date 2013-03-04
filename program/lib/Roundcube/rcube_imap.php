@@ -2498,12 +2498,11 @@ class rcube_imap extends rcube_storage
     	foreach ($uids_arr as $uid){		
     		$message = $this->get_message($uid,$folder);
 	    	if($message != null){
-    			$body_raw = $this->get_raw_body($uid);
-    			$headers_raw = $this->get_raw_headers($uid);
 	    		$RCMAIL = rcmail::get_instance();
 	    		$RCMAIL->smtp_init(true);
 	    		$headers = $this->get_message_headers($uid, $folder, true);
-	    		$sended = $RCMAIL->smtp->send_mail($headers->others['x-mxhero-quarantinepro-sender'], $headers->others['x-mxhero-quarantinepro-recipient'], $headers_raw, $body_raw);
+    			$body_raw = $this->get_raw_body($uid);
+	    		$sended = $RCMAIL->smtp->send_raw_mail($headers->others['x-mxhero-quarantinepro-sender'], $headers->others['x-mxhero-quarantinepro-recipient'], $body_raw);
 	    		$RCMAIL->smtp->disconnect();
 	    		if($sended){
 		    		$deleted = $this->delete_message($uid,$folder);
