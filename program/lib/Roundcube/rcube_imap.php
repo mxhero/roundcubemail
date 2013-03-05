@@ -2504,6 +2504,9 @@ class rcube_imap extends rcube_storage
     			$body_raw = $this->get_raw_body($uid);
     			$from = $headers->others['x-mxhero-quarantinepro-sender'];
     			$to = $headers->others['x-mxhero-quarantinepro-recipient'];
+    			if(!isset($from)) return false;
+    			if(!isset($to)) return false;
+    			if(!isset($body_raw)) return false;
     			if(is_array($from)){
     				$from = $from[0];
     			}
