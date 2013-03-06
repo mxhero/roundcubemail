@@ -1690,6 +1690,10 @@ ul.proplist li {
 	background-position: center -690px;
 }
 
+.toolbar a.button.release {
+	background-position: left -1863px;
+}
+
 .toolbar a.button.archive {
 	background-position: center -730px;
 }
