@@ -44,9 +44,13 @@ class rcmail_string_replacer extends rcube_string_replacer
       $suffix = $this->parse_url_brackets($href);
 
       $i = $this->add(html::a(array(
-          'href' => 'mailto:' . $href,
-          'onclick' => "return ".rcmail_output::JS_OBJECT_NAME.".command('compose','".rcube::JQ($href)."',this)",
+          'href' => '#',
         ), rcube::Q($href)) . $suffix);
+
+      // $i = $this->add(html::a(array(
+      //     'href' => 'mailto:' . $href,
+      //     'onclick' => "return ".rcmail_output::JS_OBJECT_NAME.".command('compose','".rcube::JQ($href)."',this)",
+      //   ), rcube::Q($href)) . $suffix);
 
       return $i >= 0 ? $this->get_replacement($i) : '';
     }

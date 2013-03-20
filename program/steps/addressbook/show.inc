@@ -180,8 +180,9 @@ function rcmail_contact_details($attrib)
 function rcmail_render_email_value($email, $col)
 {
     return html::a(array(
-        'href' => 'mailto:' . $email,
-        'onclick' => sprintf("return %s.command('compose','%s',this)", JS_OBJECT_NAME, JQ($email)),
+        // 'href' => 'mailto:' . $email,
+        // 'onclick' => sprintf("return %s.command('compose','%s',this)", JS_OBJECT_NAME, JQ($email)),
+        'href' => '#',
         'title' => rcube_label('composeto'),
         'class' => 'email',
     ), Q($email));

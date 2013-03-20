@@ -226,7 +226,7 @@ function rcube_webmail()
         this.set_button_titles();
 
         this.env.message_commands = ['show', 'reply', 'reply-all', 'reply-list',
-          'moveto', 'copy', 'delete', 'open', 'mark', 'edit', 'viewsource',
+          'moveto', 'copy', 'delete', 'release', 'open', 'mark', 'edit', 'viewsource',
           'print', 'load-attachment', 'show-headers', 'hide-headers', 'download',
           'forward', 'forward-inline', 'forward-attachment'];
 

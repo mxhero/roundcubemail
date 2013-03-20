@@ -110,7 +110,8 @@ class rcube_string_replacer
     {
         $href   = $matches[1];
         $suffix = $this->parse_url_brackets($href);
-        $i = $this->add(html::a('mailto:' . $href, rcube::Q($href)) . $suffix);
+        $i = $this->add(html::a('#', rcube::Q($href)) . $suffix);
+        // $i = $this->add(html::a('mailto:' . $href, rcube::Q($href)) . $suffix);
 
         return $i >= 0 ? $this->get_replacement($i) : '';
     }

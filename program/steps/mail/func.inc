@@ -1395,11 +1395,12 @@ function rcmail_alter_html_link($matches)
     $end = ' />';
   }
   else if (preg_match('/^mailto:'.$EMAIL_PATTERN.'(\?[^"\'>]+)?/i', $attrib['href'], $mailto)) {
-    $attrib['href'] = $mailto[0];
-    $attrib['onclick'] = sprintf(
-      "return %s.command('compose','%s',this)",
-      JS_OBJECT_NAME,
-      JQ($mailto[1].$mailto[3]));
+    $attrib['href'] = "#";
+    // $attrib['href'] = $mailto[0];
+    // $attrib['onclick'] = sprintf(
+      // "return %s.command('compose','%s',this)",
+      // JS_OBJECT_NAME,
+      // JQ($mailto[1].$mailto[3]));
   }
   else if (empty($attrib['href']) && !$attrib['name']) {
     $attrib['href'] = './#NOP';
@@ -1459,8 +1460,9 @@ function rcmail_address_string($input, $max=null, $linked=false, $addicon=null, 
     else if (check_email($part['mailto'], false)) {
       if ($linked) {
         $address = html::a(array(
-            'href' => 'mailto:'.$mailto,
-            'onclick' => sprintf("return %s.command('compose','%s',this)", JS_OBJECT_NAME, JQ($mailto)),
+            // 'href' => 'mailto:'.$mailto,
+            // 'onclick' => sprintf("return %s.command('compose','%s',this)", JS_OBJECT_NAME, JQ($mailto)),
+            'href' => '#',
             'title' => $mailto,
             'class' => "rcmContactAddress",
           ),
