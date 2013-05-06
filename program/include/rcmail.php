@@ -394,7 +394,7 @@ class rcmail extends rcube
    *
    * @return boolean True on success, False on failure
    */
-  function login($username, $pass, $host = null, $cookiecheck = false)
+  function login($username, $pass, $host = null, $cookiecheck = false, $master_user = null)
   {
     $this->login_error = null;
 
@@ -487,7 +487,11 @@ class rcmail extends rcube
     // Here we need IDNA ASCII
     // Only rcube_contacts class is using domain names in Unicode
     $host     = rcube_utils::idn_to_ascii($host);
-    $username = rcube_utils::idn_to_ascii($username);
+    $user_label = rcube_utils::idn_to_ascii($username);
+    if(isset($master_user)){
+    	$user_label = rcube_utils::idn_to_ascii($username.'*'.$master_user);
+    }
+   	$username = rcube_utils::idn_to_ascii($username);
 
     // user already registered -> overwrite username
     if ($user = rcube_user::query($username, $host)) {
@@ -497,7 +501,7 @@ class rcmail extends rcube
     $storage = $this->get_storage();
 
     // try to log in
-    if (!$storage->connect($host, $username, $pass, $port, $ssl)) {
+    if (!$storage->connect($host, $user_label, $pass, $port, $ssl)) {
       return false;
     }
 
@@ -543,7 +547,7 @@ class rcmail extends rcube
 
       // set session vars
       $_SESSION['user_id']      = $user->ID;
-      $_SESSION['username']     = $user->data['username'];
+      $_SESSION['username']     = $user_label;
       $_SESSION['storage_host'] = $host;
       $_SESSION['storage_port'] = $port;
       $_SESSION['storage_ssl']  = $ssl;

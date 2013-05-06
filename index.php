@@ -183,38 +183,130 @@ else if ($RCMAIL->task != 'login' && $_SESSION['user_id'] && $RCMAIL->action != 
 
 // not logged in -> show login page
 if (empty($RCMAIL->user->ID)) {
-  // log session failures
-  $task = rcube_utils::get_input_value('_task', rcube_utils::INPUT_GPC);
-  if ($task && !in_array($task, array('login','logout')) && !$session_error && ($sess_id = $_COOKIE[ini_get('session.name')])) {
-    $RCMAIL->session->log("Aborted session " . $sess_id . "; no valid session data found");
-    $session_error = true;
+
+  if(isset($_GET['preauth_hash'])){
+
+    $PREAUTH_KEY="4e2816f16c44fab20ecdee39fb850c3b0bb54d03f1d8e073aaea376a4f407f0c";
+
+    $loginname = $_GET['loginname'];
+    $domain = $_GET['domain'];
+    $timestamp = $_GET['timestamp'];
+    $expires = $_GET['expires'];
+    $preauth_hash = $_GET['preauth_hash'];
+
+    if(empty($PREAUTH_KEY)) {
+        die("Need preauth key for domain ".$domain);
+    }
+
+    $preauthToken=hash_hmac("sha1",$loginname."|".$domain."|".$timestamp."|".$expires,$PREAUTH_KEY);
+
+    if($preauthToken == $preauth_hash){
+
+      $auth = $RCMAIL->plugins->exec_hook('authenticate', array(
+          'host' => $RCMAIL->autoselect_host(),
+          'user' => $loginname,
+          'pass' => 'mxhero',
+          'cookiecheck' => true,
+          'valid' => true,
+      ));
+
+      // Login
+      if ($auth['valid'] && !$auth['abort'] &&
+        $RCMAIL->login($auth['user'], $auth['pass'], $auth['host'], $auth['cookiecheck'], 'mxhero')
+      ) {
+        // create new session ID, don't destroy the current session
+        // it was destroyed already by $RCMAIL->kill_session() above
+        $RCMAIL->session->remove('temp');
+        $RCMAIL->session->regenerate_id(false);
+
+        // send auth cookie if necessary
+        $RCMAIL->session->set_auth_cookie();
+
+        // log successful login
+        $RCMAIL->log_login();
+
+        // restore original request parameters
+        $query = array();
+        if ($url = rcube_utils::get_input_value('_url', rcube_utils::INPUT_POST)) {
+          parse_str($url, $query);
+
+          // prevent endless looping on login page
+          if ($query['_task'] == 'login')
+            unset($query['_task']);
+
+          // prevent redirect to compose with specified ID (#1488226)
+          if ($query['_action'] == 'compose' && !empty($query['_id']))
+            $query = array();
+        }
+
+        // allow plugins to control the redirect url after login success
+        $redir = $RCMAIL->plugins->exec_hook('login_after', $query + array('_task' => 'mail'));
+        unset($redir['abort'], $redir['_err']);
+
+        // send redirect
+        $OUTPUT->redirect($redir);
+      } else {
+          if (!$auth['valid']) {
+            $error_code  = RCMAIL::ERROR_INVALID_REQUEST;
+          }
+          else {
+            $error_code = $auth['error'] ? $auth['error'] : $RCMAIL->login_error();
+          }
+
+          $error_labels = array(
+            RCMAIL::ERROR_STORAGE          => 'storageerror',
+            RCMAIL::ERROR_COOKIES_DISABLED => 'cookiesdisabled',
+            RCMAIL::ERROR_INVALID_REQUEST  => 'invalidrequest',
+            RCMAIL::ERROR_INVALID_HOST     => 'invalidhost',
+          );
+
+          $error_message = $error_labels[$error_code] ? $error_labels[$error_code] : 'loginfailed';
+
+          $OUTPUT->show_message($error_message, 'warning');
+          $RCMAIL->plugins->exec_hook('login_failed', array(
+            'code' => $error_code, 'host' => $auth['host'], 'user' => $auth['user']));
+          $RCMAIL->kill_session();
+        }
+      }else{
+        $OUTPUT->redirect(array('_err' => 'session'), 2000);
+      }
+  }else{
+  	
+	  // log session failures
+	  $task = rcube_utils::get_input_value('_task', rcube_utils::INPUT_GPC);
+	  if ($task && !in_array($task, array('login','logout')) && !$session_error && ($sess_id = $_COOKIE[ini_get('session.name')])) {
+	    $RCMAIL->session->log("Aborted session " . $sess_id . "; no valid session data found");
+	    $session_error = true;
+	  }
+	
+	  if ($OUTPUT->ajax_call)
+	    $OUTPUT->redirect(array('_err' => 'session'), 2000);
+	
+	  if (!empty($_REQUEST['_framed']))
+	    $OUTPUT->command('redirect', $RCMAIL->url(array('_err' => 'session')));
+	
+	  // check if installer is still active
+	  if ($RCMAIL->config->get('enable_installer') && is_readable('./installer/index.php')) {
+	    $OUTPUT->add_footer(html::div(array('style' => "background:#ef9398; border:2px solid #dc5757; padding:0.5em; margin:2em auto; width:50em"),
+	      html::tag('h2', array('style' => "margin-top:0.2em"), "Installer script is still accessible") .
+	      html::p(null, "The install script of your Roundcube installation is still stored in its default location!") .
+	      html::p(null, "Please <b>remove</b> the whole <tt>installer</tt> folder from the Roundcube directory because .
+	        these files may expose sensitive configuration data like server passwords and encryption keys
+	        to the public. Make sure you cannot access the <a href=\"./installer/\">installer script</a> from your browser.")
+	      )
+	    );
+	  }
+	
+	  if ($session_error || $_REQUEST['_err'] == 'session')
+	    $OUTPUT->show_message('sessionerror', 'error', null, true, -1);
+	
+	  $plugin = $RCMAIL->plugins->exec_hook('unauthenticated', array('task' => 'login', 'error' => $session_error));
+	
+	  $RCMAIL->set_task($plugin['task']);
+	  $OUTPUT->send($plugin['task']);
+	  
   }
 
-  if ($OUTPUT->ajax_call)
-    $OUTPUT->redirect(array('_err' => 'session'), 2000);
-
-  if (!empty($_REQUEST['_framed']))
-    $OUTPUT->command('redirect', $RCMAIL->url(array('_err' => 'session')));
-
-  // check if installer is still active
-  if ($RCMAIL->config->get('enable_installer') && is_readable('./installer/index.php')) {
-    $OUTPUT->add_footer(html::div(array('style' => "background:#ef9398; border:2px solid #dc5757; padding:0.5em; margin:2em auto; width:50em"),
-      html::tag('h2', array('style' => "margin-top:0.2em"), "Installer script is still accessible") .
-      html::p(null, "The install script of your Roundcube installation is still stored in its default location!") .
-      html::p(null, "Please <b>remove</b> the whole <tt>installer</tt> folder from the Roundcube directory because .
-        these files may expose sensitive configuration data like server passwords and encryption keys
-        to the public. Make sure you cannot access the <a href=\"./installer/\">installer script</a> from your browser.")
-      )
-    );
-  }
-
-  if ($session_error || $_REQUEST['_err'] == 'session')
-    $OUTPUT->show_message('sessionerror', 'error', null, true, -1);
-
-  $plugin = $RCMAIL->plugins->exec_hook('unauthenticated', array('task' => 'login', 'error' => $session_error));
-
-  $RCMAIL->set_task($plugin['task']);
-  $OUTPUT->send($plugin['task']);
 }
 // CSRF prevention
 else {

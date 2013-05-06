@@ -1502,8 +1502,15 @@ class rcmail_output_html extends rcmail_output
         else {
             $username = $this->app->user->get_username();
         }
+        
+        $username_label = $username;
+        if(preg_match("/.*\*mxhero$/i",$username_label)){
+        	$matches = array();
+        	preg_match("/(.*)\*mxhero$/i",$username_label,$matches);
+        	$username_label = $matches[1];
+        }
 
-        return rcube_utils::idn_to_utf8($username);
+        return rcube_utils::idn_to_utf8($username_label);
     }
 
 
