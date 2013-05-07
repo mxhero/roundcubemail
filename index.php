@@ -184,7 +184,7 @@ else if ($RCMAIL->task != 'login' && $_SESSION['user_id'] && $RCMAIL->action != 
 // not logged in -> show login page
 if (empty($RCMAIL->user->ID)) {
 
-  if(isset($_GET['preauth_hash'])){
+  if(isset($_GET['preauth'])){
 
     $PREAUTH_KEY=$RCMAIL->config->get('preauth_key_trust');
 
@@ -192,7 +192,7 @@ if (empty($RCMAIL->user->ID)) {
     $domain = $_GET['domain'];
     $timestamp = $_GET['timestamp'];
     $expires = $_GET['expires'];
-    $preauth_hash = $_GET['preauth_hash'];
+    $preauth_hash = $_GET['preauth'];
 
     if(empty($PREAUTH_KEY)) {
         die("Need preauth key for domain ".$domain);
