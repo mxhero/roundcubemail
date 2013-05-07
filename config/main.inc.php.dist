@@ -893,4 +893,6 @@ $rcmail_config['autocomplete_single'] = false;
 // Georgia, Helvetica, Impact, Tahoma, Terminal, Times New Roman, Trebuchet MS, Verdana
 $rcmail_config['default_font'] = '';
 
+//Preauth key to autologin
+$rcmail_config['preauth_key_trust'] = '';
 // end of config file

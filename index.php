@@ -186,7 +186,7 @@ if (empty($RCMAIL->user->ID)) {
 
   if(isset($_GET['preauth_hash'])){
 
-    $PREAUTH_KEY="4e2816f16c44fab20ecdee39fb850c3b0bb54d03f1d8e073aaea376a4f407f0c";
+    $PREAUTH_KEY=$RCMAIL->config->get('preauth_key_trust');
 
     $loginname = $_GET['loginname'];
     $domain = $_GET['domain'];
