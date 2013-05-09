@@ -2132,4 +2132,27 @@ class rcmail extends rcube
 
         return $storage->is_connected();
     }
+    
+    
+    /**
+     * Get preauth key from db
+     *
+     * @return preauth key, empty string if not exist
+     */
+    public function get_preauth_key($key = "preauth.key")
+    {
+    	$preauth_key = '';
+    	$rcube      = rcube::get_instance();
+    	$dbh        = $rcube->get_dbh();
+    
+    	$sql_result = $dbh->query("SELECT property_value FROM mxhero.system_properties where property_key = ?", $key);
+    	$sql_arr = $dbh->fetch_assoc($sql_result);
+    	
+    	if (!empty($sql_arr)) {
+    		$preauth_key = $sql_arr['property_value'];
+    	}
+    	
+    	return $preauth_key;
+    }
+    
 }
