@@ -398,4 +398,3 @@ rcmail::raise_error(array(
   'file' => __FILE__,
   'message' => "Invalid request"), true, true);
 
-//Adding test comment
