@@ -2492,7 +2492,8 @@ class rcube_imap extends rcube_storage
     	
     	$deleted = false;
     
-    	$uids_arr = split(',', $uids);
+    	//$uids_arr = split(',', $uids);
+      $uids_arr = explode(',', $uids);
     	$this->options['fetch_headers'] = 'X-mxHero-QuarantinePro-Phase X-mxHero-QuarantinePro-Sender X-mxHero-QuarantinePro-Recipient X-mxHero-QuarantinePro-Priority';
     	
     	foreach ($uids_arr as $uid){		
